@@ -19,7 +19,7 @@ class BlogsController < ApplicationController
   def edit; end
 
   def create
-    @blog = current_user.blogs.new(blog_params)
+    @blog = current_user.premium ? current_user.blogs.new(blog_params_premium) : current_user.blogs.new(blog_params)
 
     if @blog.save
       redirect_to blog_url(@blog), notice: 'Blog was successfully created.'
@@ -60,6 +60,10 @@ class BlogsController < ApplicationController
   end
 
   def blog_params
+    params.require(:blog).permit(:title, :content, :secret)
+  end
+
+  def blog_params_premium
     params.require(:blog).permit(:title, :content, :secret, :random_eyecatch)
   end
 end
