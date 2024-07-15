@@ -47,13 +47,13 @@ class BlogsController < ApplicationController
 
   def set_blog
     blog = Blog.find(params[:id])
-    if blog.secret && user_signed_in? && blog.user_id == current_user.id
-      @blog = blog
-    elsif !blog.secret
-      @blog = blog
-    else
-      raise ActiveRecord::RecordNotFound
-    end
+    @blog = if blog.secret && user_signed_in? && blog.user_id == current_user.id
+              blog
+            elsif !blog.secret
+              blog
+            else
+              Blog.find(nil)
+            end
   end
 
   def set_own_blog
