@@ -10,7 +10,11 @@ class BlogsController < ApplicationController
   end
 
   def show
-    set_blog
+    @blog = if user_signed_in?
+              Blog.where(user_id: current_user.id, secret: true).or(Blog.where(secret: false)).find(params[:id])
+            else
+              Blog.where(secret: false).find(params[:id])
+            end
   end
 
   def new
@@ -44,17 +48,6 @@ class BlogsController < ApplicationController
   end
 
   private
-
-  def set_blog
-    blog = Blog.find(params[:id])
-    @blog = if blog.secret && user_signed_in? && blog.user_id == current_user.id
-              blog
-            elsif !blog.secret
-              blog
-            else
-              Blog.find(nil)
-            end
-  end
 
   def set_own_blog
     @blog = current_user.blogs.find(params[:id])
