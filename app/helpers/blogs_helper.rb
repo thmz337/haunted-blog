@@ -2,6 +2,6 @@
 
 module BlogsHelper
   def format_content(blog)
-    simple_format(h(blog.content).gsub("\n", '<br>'))
+    simple_format(h(blog.content))
   end
 end
